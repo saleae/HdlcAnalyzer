@@ -5,6 +5,10 @@
 #include <fstream>
 #include <sstream>
 
+
+//only set LEGACY_ANALYZER_SDK when building for the legacy 1.1.14 SDK, which is exclusively used for debugging analyzers on Windows.
+//#define LEGACY_ANALYZER_SDK
+
 HdlcAnalyzerResults::HdlcAnalyzerResults ( HdlcAnalyzer* analyzer, HdlcAnalyzerSettings* settings )
 	:	AnalyzerResults(),
 	    mSettings ( settings ),
@@ -78,8 +82,10 @@ void HdlcAnalyzerResults::GenFlagFieldString ( const Frame & frame, bool tabular
 		AddResultString ( flagTypeStr, " FLAG" );
         AddResultString ( flagTypeStr, " Flag Delimiter" );
 	}
+#ifndef LEGACY_ANALYZER_SDK
     else
         AddTabularText( flagTypeStr, " Flag Delimiter" );
+#endif
 }
 
 string HdlcAnalyzerResults::GenEscapedString ( const Frame & frame )
@@ -116,8 +122,10 @@ void HdlcAnalyzerResults::GenAddressFieldString ( const Frame & frame, DisplayBa
 		AddResultString ( "ADDR ", byteNumber ,"[", addressStr, "]", escStr.c_str() );
         AddResultString ( "Address ", byteNumber , "[", addressStr, "]", escStr.c_str() );
 	}
+#ifndef LEGACY_ANALYZER_SDK
     else
         AddTabularText( "Address ", byteNumber , "[", addressStr, "]", escStr.c_str() );
+#endif
 }
 
 void HdlcAnalyzerResults::GenInformationFieldString ( const Frame & frame, const DisplayBase display_base, bool tabular )
@@ -137,8 +145,10 @@ void HdlcAnalyzerResults::GenInformationFieldString ( const Frame & frame, const
 		AddResultString ( "I ", numberStr, " [", informationStr ,"]", escStr.c_str() );
         AddResultString ( "Info ", numberStr, " [", informationStr ,"]", escStr.c_str() );
 	}
+#ifndef LEGACY_ANALYZER_SDK
     else
         AddTabularText("Info ", numberStr, " [", informationStr ,"]", escStr.c_str() );
+#endif
 }
 
 void HdlcAnalyzerResults::GenControlFieldString ( const Frame & frame, DisplayBase display_base, bool tabular )
@@ -186,12 +196,14 @@ void HdlcAnalyzerResults::GenControlFieldString ( const Frame & frame, DisplayBa
 
         AddResultString ( ss.str().c_str(), byteStr, "]", frameTypeStr, escStr.c_str() );
 	}
+#ifndef LEGACY_ANALYZER_SDK
     else
     {
         ss.str ( "" );
         ss << "Control" << ctlNumStr << " [";
         AddTabularText(ss.str().c_str(), byteStr, "]", frameTypeStr, escStr.c_str() );
     }
+#endif
 }
 
 void HdlcAnalyzerResults::GenFcsFieldString ( const Frame & frame, DisplayBase display_base, bool tabular )
@@ -254,8 +266,10 @@ void HdlcAnalyzerResults::GenFcsFieldString ( const Frame & frame, DisplayBase d
 
     if( !tabular )
         AddResultString ( fieldNameStr.str().c_str()  );
+#ifndef LEGACY_ANALYZER_SDK
     else
         AddTabularText( fieldNameStr.str().c_str()  );
+#endif
 
 }
 
@@ -277,10 +291,12 @@ void HdlcAnalyzerResults::GenAbortFieldString ( bool tabular )
 		AddResultString ( "ABORT!" );
         AddResultString ( "ABORT SEQUENCE!", seq );
 	}
+#ifndef LEGACY_ANALYZER_SDK
     else
     {
         AddTabularText( "ABORT SEQUENCE!", seq );
     }
+#endif
 }
 
 string HdlcAnalyzerResults::EscapeByteStr ( const Frame & frame )
@@ -584,8 +600,10 @@ void HdlcAnalyzerResults::GenerateExportFile ( const char* file, DisplayBase dis
 
 void HdlcAnalyzerResults::GenerateFrameTabularText ( U64 frame_index, DisplayBase display_base )
 {
+#ifndef LEGACY_ANALYZER_SDK
     ClearTabularText();
 	GenBubbleText ( frame_index, display_base, true );
+#endif
 }
 
 void HdlcAnalyzerResults::GeneratePacketTabularText ( U64 packet_id, DisplayBase display_base )
